@@ -27,7 +27,7 @@ function Sidebar() {
             <Link
               to="/about"
               className={`nav-link d-flex align-items-center ${location.pathname === '/about' ? 'active' : ''}`}>
-              <i className="bi bi-plus-circle me-2"></i>
+              <i className="bi bi-info-circle me-2"></i>
               About
             </Link>
           </li>
