@@ -6,7 +6,7 @@ import Footer from './components/Footer';
 import Sidebar from './components/Sidebar';
 import About from './Pages/About';
 import NotFound from './Pages/NotFound';
-
+import TaskDetailPage from './Pages/TaskDetailPage';
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
         <Footer />
       </div>
     </Router>
-  );
+    );
 }
 
 export default App;
