@@ -1,10 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import HomePage from './Pages/HomePage'
-import CreateTaskPage from './Pages/CreateTaskPage'
-import TaskDetailPage from './Pages/TaskDetailPage'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Sidebar from './components/Sidebar'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './Pages/HomePage';
+import CreateTaskPage from './Pages/CreateTaskPage';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Sidebar from './components/Sidebar';
+import About from './Pages/About';
+import NotFound from './Pages/NotFound';
+
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/create" element={<CreateTaskPage />} />
                 <Route path="/task/:id" element={<TaskDetailPage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/*" element={<NotFound />} />
               </Routes>
             </div>
           </div>
@@ -28,7 +32,7 @@ function App() {
         <Footer />
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
