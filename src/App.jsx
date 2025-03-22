@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import HomePage from './Pages/HomePage'
 import CreateTaskPage from './Pages/CreateTaskPage'
+import TaskDetailPage from './Pages/TaskDetailPage'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Sidebar from './components/Sidebar'
@@ -19,6 +20,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/create" element={<CreateTaskPage />} />
+                <Route path="/task/:id" element={<TaskDetailPage />} />
               </Routes>
             </div>
           </div>

@@ -1,58 +1,83 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-function CreateTaskPage() {
+function TaskDetailPage() {
+  const {id} = useParams();
   const navigate = useNavigate();
+
+  const [task, setTask] = useState(null);
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
-  const [taskStatus, setTaskStatus] = useState('To Do');
+  const [taskStatus, setTaskStatus] = useState('');
   const [taskAssignee, setTaskAssignee] = useState('');
-  const [taskPriority, setTaskPriority] = useState('Medium');
+  const [taskPriority, setTaskPriority] = useState('');
   const [taskDueDate, setTaskDueDate] = useState('');
   const [notification, setNotification] = useState('');
+
+  useEffect(() => {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const foundTask = tasks.find(task => task.id === id);
+
+    if (foundTask) {
+      setTask(foundTask);
+      setTaskTitle(foundTask.title);
+      setTaskDescription(foundTask.description);
+      setTaskStatus(foundTask.status);
+      setTaskAssignee(foundTask.assignee || '');
+      setTaskPriority(foundTask.priority);
+      setTaskDueDate(foundTask.dueDate || '');
+    } else {
+      navigate('/');
+    }
+  }, [id, navigate]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const newTask = {
-      id: Date.now().toString(),
+    const updatedTask = {
+      ...task,
       title: taskTitle,
       description: taskDescription,
       assignee: taskAssignee,
       status: taskStatus,
       priority: taskPriority,
-      createdDate: new Date().toISOString().split('T')[0],
-      dueDate: taskDueDate
+      dueDate: taskDueDate,
     };
 
-    const existingTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    const updatedTasks = [...existingTasks, newTask];
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const updatedTasks = tasks.map(t => t.id === id ? updatedTask : t);
 
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-
-    setNotification('Task created successfully');
-    resetForm();
+    setNotification('Task updated successfully');
 
     setTimeout(() => {
       navigate('/');
     }, 1000);
   };
 
-  const resetForm = () => {
-    setTaskTitle('');
-    setTaskDescription('');
-    setTaskStatus('To Do');
-    setTaskAssignee('');
-    setTaskPriority('Medium');
-    setTaskDueDate('');
-    setTimeout(() => {
-      setNotification('');
-    }, 3000);
+  const handleDelete = () => {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const updatedTasks = tasks.filter(t => t.id !== id);
+
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    navigate('/');
   };
+
+  if (!task) {
+    return <div className="container mt-5"><p>Loading...</p></div>;
+  }
 
   return (
     <div className="container-fluid py-4">
-      <h1 className="mb-4">Create New Task</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Task</h1>
+        <button
+    onClick={() => navigate('/')}
+    className="btn btn-outline-secondary"
+    >
+          Back to Board
+        </button>
+      </div>
 
       {notification && (
     <div className="alert alert-success alert-dismissible fade show" role="alert">
@@ -144,15 +169,24 @@ function CreateTaskPage() {
     id="taskDueDate"
     value={taskDueDate}
     onChange={(e) => setTaskDueDate(e.target.value)}
-    required
     />
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary">
-              <i className="bi bi-plus-circle me-2"></i>
-              Create Task
-            </button>
+            <div className="d-flex justify-content-between">
+              <button
+    type="button"
+    className="btn btn-danger"
+    onClick={handleDelete}
+    >
+                <i className="bi bi-trash me-2"></i>
+                Delete Task
+              </button>
+              <button type="submit" className="btn btn-primary">
+                <i className="bi bi-save me-2"></i>
+                Save Changes
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -160,5 +194,4 @@ function CreateTaskPage() {
     );
 }
 
-export default CreateTaskPage;
-
+export default TaskDetailPage;

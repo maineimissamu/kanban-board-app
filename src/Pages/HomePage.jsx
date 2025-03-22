@@ -1,99 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import TaskList from '../components/TaskList';
 import mocktasks from '../dataset/kanban.json';
 
 function HomePage() {
-  const [tasks] = useState(mocktasks);
-  function filterPriority(priority) {
-    if (priority === 'High') {
-      return 'bg-danger';
-    } else if (priority === 'Medium') {
-      return 'bg-warning';
-    } else {
-      return 'bg-success';
-    }
-  }
+  const [tasks, setTasks] = useState([]);
 
-  function handleHover(e) {
-    e.target.style.display = 'block';
-  }
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+    if (savedTasks.length === 0) {
+      localStorage.setItem('tasks', JSON.stringify(mocktasks));
+      setTasks(mocktasks);
+    } else {
+      setTasks(savedTasks);
+    }
+  }, []);
+
+  const handleDeleteTask = (taskId) => {
+    const updatedTasks = tasks.filter(task => task.id !== taskId);
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+  };
+
+  const handleDropTask = (taskId, newStatus) => {
+    const task = tasks.find(t => t.id === taskId);
+
+    if (task && task.status !== newStatus) {
+      const updatedTask = {
+        ...task,
+        status: newStatus
+      };
+
+      const updatedTasks = tasks.map(t => t.id === taskId ? updatedTask : t);
+
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    }
+  };
 
   return (
     <div className="container-fluid mt-5">
       <div className="row text-center">
-        <div className="col-md-4">
-          <div className="card bg-danger text-white">
-            <div className="card-header">
-              <h2>To Do</h2>
-            </div>
-            <div className="card-body">
-              {tasks
-      .filter((task) => task.status === 'To Do')
-      .map((task, index) => (
-        <div key={index} className="card mb-2">
-                    <span
-        class={` d-inline-block rounded-circle ${filterPriority(task.priority)}`}
-        style={{
-          width: '10px',
-          height: '10px'
-        }}></span>
-                    <p> {task.dueDate} </p>
-                    <div className="card-body">
-                      <h5 className="card-title">{task.title}</h5>
-                      <p className="card-text">{task.description}</p>
-                    </div>
-                  </div>
-      ))}
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card bg-warning text-dark">
-            <div className="card-header">
-              <h2>In Progress</h2>
-            </div>
-            <div className="card-body"></div>
-            {tasks
-      .filter((task) => task.status === 'In Progress')
-      .map((task, index) => (
-        <div key={index} className="card mb-2">
-                  <span
-        className={` d-inline-block rounded-circle ${filterPriority(task.priority)}`}
-        style={{
-          width: '10px',
-          height: '10px'
-        }}></span>
-                  <div className="card-body">
-                    <h5 className="card-title">{task.title}</h5>
-                    <p className="card-text">{task.description}</p>
-                  </div>
-                </div>
-      ))}
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card bg-success text-white">
-            <div className="card-header">
-              <h2>Done</h2>
-            </div>
-            <div className="card-body"></div>
-            {tasks
-      .filter((task) => task.status === 'Done')
-      .map((task, index) => (
-        <div key={index} className="card mb-2">
-                  <span
-        class={` d-inline-block rounded-circle ${filterPriority(task.priority)}`}
-        style={{
-          width: '10px',
-          height: '10px'
-        }}></span>
-                  <div className="card-body">
-                    <h5 className="card-title">{task.title}</h5>
-                    <p className="card-text">{task.description}</p>
-                  </div>
-                </div>
-      ))}
-          </div>
-        </div>
+        <TaskList
+    title="To Do"
+    tasks={tasks}
+    status="To Do"
+    headerColor="bg-danger"
+    textColor="text-white"
+    onDeleteTask={handleDeleteTask}
+    onDropTask={handleDropTask}
+    />
+        
+        <TaskList
+    title="In Progress"
+    tasks={tasks}
+    status="In Progress"
+    headerColor="bg-warning"
+    textColor="text-dark"
+    onDeleteTask={handleDeleteTask}
+    onDropTask={handleDropTask}
+    />
+        
+        <TaskList
+    title="Done"
+    tasks={tasks}
+    status="Done"
+    headerColor="bg-success"
+    textColor="text-white"
+    onDeleteTask={handleDeleteTask}
+    onDropTask={handleDropTask}
+    />
       </div>
     </div>
     );
