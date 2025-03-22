@@ -4,6 +4,9 @@ function CreateTaskPage() {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskStatus, setTaskStatus] = useState('To do');
+  const [taskAssignee, setTaskAssignee] = useState('');
+  const [taskPriority, setTaskPriority] = useState('Medium');
+  const [taskDueDate, setTaskDueDate] = useState('');
   const [notification, setNotification] = useState('');
 
   const handleSubmit = (event) => {
@@ -13,8 +16,11 @@ function CreateTaskPage() {
       id: Date.now().toString(),
       title: taskTitle,
       description: taskDescription,
+      assignee: taskAssignee,
       status: taskStatus,
-      createdAt: new Date().toISOString(),
+      priority: taskPriority,
+      createdDate: new Date().toISOString().split('T')[0],
+      dueDate: taskDueDate
     };
 
     const existingTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
@@ -30,6 +36,9 @@ function CreateTaskPage() {
     setTaskTitle('');
     setTaskDescription('');
     setTaskStatus('To do');
+    setTaskAssignee('');
+    setTaskPriority('Medium');
+    setTaskDueDate('');
     setTimeout(() => {
       setNotification('');
     }, 3000);
@@ -78,18 +87,60 @@ function CreateTaskPage() {
     ></textarea>
             </div>
 
-            <div className="mb-3">
-              <label htmlFor="taskStatus" className="form-label">Status</label>
-              <select
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label htmlFor="taskAssignee" className="form-label">Assignee</label>
+                <input
+    type="text"
+    className="form-control"
+    id="taskAssignee"
+    value={taskAssignee}
+    onChange={(e) => setTaskAssignee(e.target.value)}
+    required
+    />
+              </div>
+
+              <div className="col-md-6 mb-3">
+                <label htmlFor="taskStatus" className="form-label">Status</label>
+                <select
     className="form-select"
     id="taskStatus"
     value={taskStatus}
     onChange={(e) => setTaskStatus(e.target.value)}
     >
-                <option value="to do">To do</option>
-                <option value="in progress">In progress</option>
-                <option value="completed">Completed</option>
-              </select>
+                  <option value="To do">To do</option>
+                  <option value="In progress">In progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label htmlFor="taskPriority" className="form-label">Priority</label>
+                <select
+    className="form-select"
+    id="taskPriority"
+    value={taskPriority}
+    onChange={(e) => setTaskPriority(e.target.value)}
+    >
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+
+              <div className="col-md-6 mb-3">
+                <label htmlFor="taskDueDate" className="form-label">Due Date</label>
+                <input
+    type="date"
+    className="form-control"
+    id="taskDueDate"
+    value={taskDueDate}
+    onChange={(e) => setTaskDueDate(e.target.value)}
+    required
+    />
+              </div>
             </div>
 
             <button type="submit" className="btn btn-primary">
