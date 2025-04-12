@@ -7,8 +7,7 @@ function About() {
 
       <div className="mb-4 text-center">
         <p className="lead">
-          This is a simple Kanban Board application created using <strong>React</strong>. It demonstrates the basic
-          usage of <strong>React Router</strong>, <strong>React Hooks</strong>, and <strong>React Context API</strong>.
+          This is a simple Kanban Board application created using <strong>React</strong>. For styling, we used <strong>Bootstrap</strong>.
         </p>
       </div>
 
